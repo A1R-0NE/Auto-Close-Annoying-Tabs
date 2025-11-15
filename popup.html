@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Auto Close Blocked Tabs</title>
+
+  <style>
+
+    .theme-switch-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end; 
+      margin-bottom: 0px; 
+      position: relative;
+      z-index: 10;
+      padding-bottom: 0px;
+      margin-top: -5px;
+      
+    }
+    .theme-switch {
+      position: relative;
+      display: inline-block;
+      width: 40px; 
+      height: 20px;
+    }
+    .theme-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 14px;
+      width: 14px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .4s;
+    }
+    input:checked + .slider {
+      background-color: #007bff;
+    }
+    input:checked + .slider:before {
+      transform: translateX(20px);
+    }
+    .slider.round {
+      border-radius: 34px;
+    }
+    .slider.round:before {
+      border-radius: 50%;
+    }
+   
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      width: 250px;
+      padding: 10px;
+      background: #f9f9f9;
+      color: #333;
+      border: 3px solid #202020;
+      margin: 3px;
+      user-select: none;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    h1 {
+      font-size: 18px;
+      margin: 0 0 0px 0;
+      text-align: center;
+      font-weight: 900;
+      word-spacing: 5px;
+      letter-spacing: 0.5px;
+      padding-top: 0px;
+    }
+
+    h4 {
+      font-size: 18px;
+      margin: 0 0 10px 0;
+      text-align: center;
+      font-weight: 800;
+      word-spacing: 5px;
+      letter-spacing: 0.5px;
+    }
+
+    hr {
+      border: none;
+      border-top: 1px solid #eee;
+      margin: 15px 0;
+    }
+
+
+    input[type="text"] {
+      box-sizing: border-box;
+
+      width: 100%;
+
+      padding: 12px 10px;
+      font-size: 14px;
+
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      margin-bottom: 8px;
+    }
+
+    button {
+      width: 100%;
+      padding: 8px 10px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+      transition: background 0.2s ease;
+
+    }
+
+
+    #blockCurrentBtn {
+
+      background: #202020;
+      border: 3px solid #202020;
+      font-weight: 600;
+      color: white;
+    }
+
+    #blockCurrentBtn:hover {
+      background: #8f5050;
+      border: 3px solid #202020;
+      color: white;
+    }
+
+    #addBtn {
+      background: #007bff;
+      color: white;
+      border: 3px solid #202020;
+      margin-top: 5px !important;
+      padding: 8px 10px !important;
+      font-weight: 600;
+      border: 3px solid #202020;
+    }
+
+    #addBtn:hover {
+      background: #0056b3;
+      border: 3px solid #525252;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 10px 0 0 0;
+      max-height: 140px;
+      overflow-y: auto;
+      border: 3px solid #7c7878;
+      padding: 5px;
+      border-radius: 5px;
+    }
+
+    li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #c7c7c7;
+      margin: 4px 0;
+      padding: 2px 10px;
+      border-radius: 5px;
+      font-size: 12px;
+      color: #2c2c2c;
+      border: 3px solid #262525;
+      word-break: break-all;
+      font-weight: 700;
+    }
+
+    li span {
+      margin-right: 8px;
+    }
+
+    li .remove-btn {
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 16px;
+      padding: 0px 5px;
+      width: auto;
+      color: #ff0000;
+      border: 3px solid rgb(255, 0, 0);
+      background: #ffffff;
+    }
+
+    li .remove-btn:hover {
+      color: #ffffff;
+      border: 3px solid #ff0000;
+      background: rgb(255, 0, 0);
+    }
+
+    #resetBtn {
+      margin-top: 10px;
+      background: #fdfdfd;
+      color: #d9534f;
+
+      border: 3px solid #202020;
+
+      font-weight: 600;
+    }
+
+    #resetBtn:hover {
+      background: #d9534f;
+
+      color: #ffffff;
+      border-color: #d9534f;
+    }
+
+    .empty-item {
+      justify-content: center;
+      font-style: italic;
+      color: #999;
+      background: #fdfdfd;
+      border: 1px dashed #ddd !important;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .footer-btn {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+      font-weight: 600;
+    }
+
+    .footer-btn svg {
+      width: 16px;
+      height: 16px;
+      fill: currentColor;
+    }
+
+
+    #creditsBtn {
+      background-color: #24292e;
+      color: #ffffff;
+      border: 3px solid #202020;
+    }
+
+    #creditsBtn:hover {
+      background-color: #3a4148;
+      border: 3px solid #525252;
+    }
+
+    #creditsBtn img {
+      filter: invert(1);
+    }
+
+    #donateBtn {
+      background-color: #ff6433;
+
+      color: #ffffff;
+      border: 3px solid #202020;
+    }
+
+    #donateBtn:hover {
+      background-color: #c9302c;
+      border: 3px solid #525252;
+    }
+
+    #donateBtn img {
+      filter: invert(1);
+    }
+
+    #newLink {
+      width: 100% !important;
+      height: auto !important;
+      padding: 12px 10px !important;
+      font-size: 14px !important;
+      border: 3px solid #202020;
+      font-weight: normal !important;
+      width: 100% !important;
+      border-radius: 5px;
+    }
+
+    body.dark-mode {
+      background: #202020;
+      color: #f0f0f0;
+      border-color: #555;
+    }
+    
+    body.dark-mode hr[style*="solid #202020"] {
+      border-top: 3px solid #555 !important;
+    }
+    
+    body.dark-mode hr {
+      border-top: 1px solid #444;
+    }
+    
+    body.dark-mode #newLink {
+      background: #333;
+      color: #f0f0f0;
+      border-color: #555;
+    }
+    
+    body.dark-mode ul {
+      border-color: #555;
+    }
+    
+    body.dark-mode li {
+      background: #3a3a3a;
+      color: #f0f0f0;
+      border-color: #555;
+    }
+    
+    body.dark-mode li .remove-btn {
+      background: #333;
+      color: #ff4d4d;
+      border-color: #ff4d4d;
+    }
+    
+    body.dark-mode li .remove-btn:hover {
+      background: #ff4d4d;
+      color: #fff;
+    }
+    
+    body.dark-mode #resetBtn {
+      background: #333;
+      color: #d9534f;
+      border-color: #555;
+    }
+    
+    body.dark-mode #resetBtn:hover {
+      background: #d9534f;
+      color: #fff;
+      border-color: #d9534f;
+    }
+    
+    body.dark-mode .empty-item {
+      background: #2a2a2a;
+      color: #777;
+      border: 1px dashed #444 !important;
+    }
+
+    body.dark-mode #blockCurrentBtn {
+
+      background: #5c5c5c;
+      border: 3px solid #7a7a7a;
+      font-weight: 600;
+      color: white;
+    }
+
+    body.dark-mode #blockCurrentBtn:hover {
+      background: #8f5050;
+      border: 3px solid #494949;
+      color: white;
+    }
+
+    body.dark-mode #addBtn {
+      background: #012953;
+      color: white;
+      border: 3px solid #202020;
+      margin-top: 5px !important;
+      padding: 8px 10px !important;
+      font-weight: 600;
+      border: 3px solid #3e3e3e;
+    }
+
+    body.dark-mode #addBtn:hover {
+      background: #0056b3;
+      border: 3px solid #525252;
+    }
+
+    body.dark-mode #creditsBtn {
+      background-color: #24292e;
+      color: #ffffff;
+      border: 3px solid #434343;
+    }
+
+    body.dark-mode #creditsBtn:hover {
+      background-color: #3a4148;
+      border: 3px solid #272727;
+    }
+
+  
+
+    body.dark-mode #donateBtn {
+      background-color: #ff6433;
+
+      color: #ffffff;
+      border: 3px solid #434343;
+    }
+
+    body.dark-mode #donateBtn:hover {
+      background-color: #fb8460;
+      border: 3px solid #272727;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="theme-switch-wrapper">
+    <label class="theme-switch" for="darkModeToggle">
+      <input type="checkbox" id="darkModeToggle">
+      <span class="slider round"></span>
+    </label>
+  </div>
+
+  <h1>AUTO CLOSE TABS</h1>
+  <hr style="margin: 10px 0; border-top: 3px solid #202020;" />
+  <h4>Quick Action</h4>
+  <button id="blockCurrentBtn">Block This Site</button>
+
+  <hr />
+
+  <h4>Block List Manager</h4>
+
+  <input id="newLink" placeholder="Add Keyword or Site Url ..." />
+  <button id="addBtn">Add to blocklist</button>
+
+  <ul id="list"></ul>
+  <button id="resetBtn">Reset to Default List</button>
+
+  <hr />
+
+  <div class="footer-links">
+    <button id="creditsBtn" class="footer-btn">
+      <img src="https://img.icons8.com/?size=100&id=3tC9EQumUAuq&format=png&color=000000" alt="GitHub Logo"
+        width="20px">
+      <span>GitHub</span>
+    </button>
+
+    <button id="donateBtn" class="footer-btn">
+      <img src="https://img.icons8.com/?size=100&id=3zOBKGrfuTCN&format=png&color=000000" alt="Ko-fi Logo" width="20px">
+      <span>Ko-fi</span>
+    </button>
+
+  </div>
+  <script src="popup.js"></script>
+</body>
+
+</html>
