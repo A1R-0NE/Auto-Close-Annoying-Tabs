@@ -37,14 +37,15 @@
       bottom: 0;
       background-color: #ccc;
       transition: .4s;
+      border: 2px solid #202020;
     }
     .slider:before {
       position: absolute;
       content: "";
       height: 14px;
       width: 14px;
-      left: 3px;
-      bottom: 3px;
+      left: 1px;
+      bottom: 1px;
       background-color: white;
       transition: .4s;
     }
@@ -298,6 +299,10 @@
       color: #f0f0f0;
       border-color: #555;
     }
+
+    body.dark-mode .slider {
+      border-color: #555;
+    }
     
     body.dark-mode hr[style*="solid #202020"] {
       border-top: 3px solid #555 !important;
@@ -410,7 +415,7 @@
 </head>
 
 <body>
-  <div class="theme-switch-wrapper">
+  <div class="theme-switch-wrapper" title="Toggle Dark Mode">
     <label class="theme-switch" for="darkModeToggle">
       <input type="checkbox" id="darkModeToggle">
       <span class="slider round"></span>
@@ -426,7 +431,7 @@
 
   <h4>Block List Manager</h4>
 
-  <input id="newLink" placeholder="Add Keyword or Site Url ..." />
+  <input id="newLink" placeholder="Add Keyword or Site Url ..." title="Type a domain (e.g. 'facebook.com') or a keyword (e.g. 'casino')"/>
   <button id="addBtn">Add to blocklist</button>
 
   <ul id="list"></ul>
@@ -435,13 +440,13 @@
   <hr />
 
   <div class="footer-links">
-    <button id="creditsBtn" class="footer-btn">
+    <button id="creditsBtn" class="footer-btn"title="View my GitHub page...">
       <img src="https://img.icons8.com/?size=100&id=3tC9EQumUAuq&format=png&color=000000" alt="GitHub Logo"
         width="20px">
       <span>GitHub</span>
     </button>
 
-    <button id="donateBtn" class="footer-btn">
+    <button id="donateBtn" class="footer-btn" title="Buy Me a Coffee <3">
       <img src="https://img.icons8.com/?size=100&id=3zOBKGrfuTCN&format=png&color=000000" alt="Ko-fi Logo" width="20px">
       <span>Ko-fi</span>
     </button>
@@ -449,5 +454,6 @@
   </div>
   <script src="popup.js"></script>
 </body>
+
 
 </html>
