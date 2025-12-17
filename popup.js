@@ -178,4 +178,38 @@ darkModeToggle.addEventListener("click", () => {
   chrome.storage.sync.set({ darkModeEnabled: isDark }, () => {
     applyTheme(isDark);
   });
+
 });
+
+const powerBtn = document.getElementById("powerBtn");
+
+chrome.storage.sync.get({ extensionEnabled: true }, (data) => {
+  updatePowerIcon(data.extensionEnabled);
+});
+
+powerBtn.addEventListener("click", () => {
+  chrome.storage.sync.get({ extensionEnabled: true }, (data) => {
+    const newState = !data.extensionEnabled;
+
+    chrome.storage.sync.set({ extensionEnabled: newState }, () => {
+      updatePowerIcon(newState);
+
+      if (newState) {
+        chrome.action.setBadgeText({ text: "" });
+      } else {
+        chrome.action.setBadgeText({ text: "OFF" });
+        chrome.action.setBadgeBackgroundColor({ color: "#555" });
+      }
+    });
+  });
+});
+
+function updatePowerIcon(isEnabled) {
+  if (isEnabled) {
+    powerBtn.classList.remove("disabled");
+    powerBtn.title = "Extension is ON";
+  } else {
+    powerBtn.classList.add("disabled");
+    powerBtn.title = "Extension is OFF";
+  }
+}
