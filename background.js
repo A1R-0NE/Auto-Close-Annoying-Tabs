@@ -22,18 +22,20 @@ chrome.runtime.onInstalled.addListener(async (details) => {
 
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-  if (!tab.url && !tab.title) {
-    return;
+  if (changeInfo.status === 'complete' && tab.url) {
+    
+    chrome.storage.sync.get({ blockedList: [], extensionEnabled: true }, (data) => {
+      
+      if (data.extensionEnabled === false) return;
+
+      const blockedList = data.blockedList;
+      
+     
+      const shouldBlock = blockedList.some(site => tab.url.includes(site));
+      
+      if (shouldBlock) {
+        chrome.tabs.remove(tabId);
+      }
+    });
   }
-
-  chrome.storage.sync.get({ blockedList: [] }, (data) => {
-    const allBlocked = data.blockedList;
-
-    const urlBlocked = tab.url && allBlocked.some((pattern) => tab.url.includes(pattern));
-    const titleBlocked = tab.title && allBlocked.some((pattern) => tab.title.includes(pattern));
-
-    if (urlBlocked || titleBlocked) {
-      chrome.tabs.remove(tabId);
-    }
-  });
 });
